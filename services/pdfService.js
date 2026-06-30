@@ -1,7 +1,6 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
+import * as pdfParseModule from 'pdf-parse';
 
-const pdfParseModule = await import('pdf-parse');
+// Access the underlying PDFParse constructor directly from the namespace module
 const pdfParse = pdfParseModule.PDFParse;
 
 /**
