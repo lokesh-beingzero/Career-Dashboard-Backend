@@ -20,19 +20,6 @@ app.use(express.json());
 // 1. Initialize Gemini SDK (Using 2026 Recommended @google/genai)
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// 2. Connect to MongoDB
-// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/resume_optimizer')
-//   .then(() => console.log('Connected to MongoDB'))
-//   .catch(err => console.error('MongoDB connection error:', err));
-
-// Define MongoDB Schema
-// const AnalysisSchema = new mongoose.Schema({
-//   createdAt: { type: Date, default: Date.now },
-//   jobDescription: String,
-//   analysisResult: Object
-// });
-// const Analysis = mongoose.model('Analysis', AnalysisSchema);
-
 // 3. Configure Multer for In-Memory File Uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -47,10 +34,8 @@ app.post('/api/analyze', upload.single('resume'), async (req, res) => {
 
     const uint8ArrayData = new Uint8Array(req.file.buffer);
 
-
     const pdfParseObj = new pdfParse(uint8ArrayData);
     const pdfData = await pdfParseObj.getText();
-    console.log('pdfData = ', pdfData);
 
     const resumeText = pdfData.text;
 
@@ -88,13 +73,6 @@ app.post('/api/analyze', upload.single('resume'), async (req, res) => {
     });
 
     const reportData = JSON.parse(aiResponse.text);
-
-    // // Save history to MongoDB
-    // const savedRecord = new Analysis({
-    //   jobDescription,
-    //   analysisResult: reportData
-    // });
-    // await savedRecord.save();
 
     // Send JSON report back to React
     return res.json(reportData);
